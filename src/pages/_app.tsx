@@ -1,23 +1,14 @@
-// src/pages/_app.tsx
 import { withTRPC } from "@trpc/next";
+import { AppType } from "next/dist/shared/lib/utils";
 import type { AppRouter } from "../server/router";
-import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
-import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
 
-const MyApp: AppType = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
-  return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
-  );
+const MyApp: AppType = ({ Component, pageProps }) => {
+  return <Component {...pageProps} />;
 };
 
-const getBaseUrl = () => {
+function getBaseUrl() {
   if (typeof window !== "undefined") {
     return "";
   }
@@ -25,7 +16,7 @@ const getBaseUrl = () => {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
 
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
-};
+}
 
 export default withTRPC<AppRouter>({
   config({ ctx }) {
@@ -36,6 +27,11 @@ export default withTRPC<AppRouter>({
     const url = `${getBaseUrl()}/api/trpc`;
 
     return {
+      headers() {
+        return {
+          cookie: ctx?.req?.headers.cookie,
+        };
+      },
       url,
       transformer: superjson,
       /**
@@ -47,5 +43,5 @@ export default withTRPC<AppRouter>({
   /**
    * @link https://trpc.io/docs/ssr
    */
-  ssr: false,
+  ssr: true,
 })(MyApp);

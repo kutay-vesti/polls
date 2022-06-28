@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import React from "react";
 import { json } from "stream/consumers";
 import { trpc } from "../utils/trpc";
@@ -44,7 +45,13 @@ const Home: NextPage = () => {
         <QuestionCreator />
         <div>
           {data.map((question) => {
-            return <div key={question.id}>{question.question}</div>;
+            return (
+              <Link href={`/questions/${question.id}`} key={question.id}>
+                <a>
+                  <div key={question.id}>{question.question}</div>
+                </a>
+              </Link>
+            );
           })}
         </div>
       </div>

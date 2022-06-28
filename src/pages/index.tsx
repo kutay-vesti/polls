@@ -1,24 +1,29 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import React from "react";
 import { json } from "stream/consumers";
 import { trpc } from "../utils/trpc";
 
 const QuestionCreator: React.FC<{}> = () => {
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const client = trpc.useContext();
-  const { mutate } = trpc.useMutation("questions.create", {
+  const { mutate, isLoading } = trpc.useMutation("questions.create", {
     onSuccess: (data) => {
       console.log("successs?", data);
       client.invalidateQueries(["questions.get-all"]);
+      if (!inputRef.current) return;
+      inputRef.current.value = "";
     },
   });
   return (
     <input
+      ref={inputRef}
       className="border border-gray-300 rounded-lg p-2"
+      disabled={isLoading}
       onKeyDown={(event) => {
         if (event.key === "Enter") {
           console.log("enterr!!", event.currentTarget.value);
           mutate({ question: event.currentTarget.value });
-          event.currentTarget.value = "";
         }
       }}
     ></input>
@@ -42,7 +47,6 @@ const Home: NextPage = () => {
             return <div key={question.id}>{question.question}</div>;
           })}
         </div>
-        <div>{JSON.stringify(data)}</div>
       </div>
     </>
   );

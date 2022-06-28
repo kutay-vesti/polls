@@ -11,7 +11,7 @@ const QuestionCreator: React.FC<{}> = () => {
   const { mutate, isLoading } = trpc.useMutation("questions.create", {
     onSuccess: (data) => {
       console.log("successs?", data);
-      client.invalidateQueries(["questions.get-all"]);
+      client.invalidateQueries(["questions.get-all-my-questions"]);
       if (!inputRef.current) return;
       inputRef.current.value = "";
     },
@@ -34,7 +34,7 @@ const QuestionCreator: React.FC<{}> = () => {
 const Home: NextPage = () => {
   // const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
 
-  const { data, isLoading } = trpc.useQuery(["questions.get-all"]);
+  const { data, isLoading } = trpc.useQuery(["questions.get-all-my-questions"]);
 
   if (isLoading || !data) return <div>Loading...</div>;
 

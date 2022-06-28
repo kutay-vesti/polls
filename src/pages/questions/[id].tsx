@@ -11,7 +11,16 @@ const QuestionPageContent: React.FC<{ id: string }> = ({ id }) => {
   if (error) return <div>Error</div>;
   if (!data) return <div>No data</div>;
 
-  return <div>{data?.question}</div>;
+  return (
+    <div>
+      <div>{data?.question}</div>
+      <div>
+        {(data?.options as string[]).map((option, index) => (
+          <div key={index}>{option}</div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const QuestionPage = () => {

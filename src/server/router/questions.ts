@@ -30,6 +30,7 @@ export const questionRouter = createRouter()
                 data:{
 
                     question:input.question,
+                 options:[]
                 }
             })
         }

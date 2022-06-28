@@ -12,10 +12,15 @@ const QuestionPageContent: React.FC<{ id: string }> = ({ id }) => {
   if (!data) return <div>No data</div>;
 
   return (
-    <div>
-      <div>{data?.question}</div>
+    <div className="m-3">
+      {data?.isOwner && (
+        <div className="bg-red-600 text-white font-medium rounded-md p-3 ">
+          you made this
+        </div>
+      )}
+      <div>{data?.question?.question}</div>
       <div>
-        {(data?.options as string[]).map((option, index) => (
+        {(data?.question?.options as string[]).map((option, index) => (
           <div key={index}>{option}</div>
         ))}
       </div>

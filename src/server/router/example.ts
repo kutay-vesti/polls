@@ -1,5 +1,6 @@
 import { createRouter } from "./context";
 import { z } from "zod";
+import {prisma} from "../db/client"
 
 export const exampleRouter = createRouter()
   .query("hello", {
@@ -18,4 +19,11 @@ export const exampleRouter = createRouter()
     async resolve({ ctx }) {
       return await ctx.prisma.pollQuestion.findMany();
     },
-  });
+  })
+  .query("getAllQuestions", {
+    async resolve() {
+      return await prisma.pollQuestion.findMany();
+
+    }})
+
+

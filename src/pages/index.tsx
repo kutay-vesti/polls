@@ -2,10 +2,12 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
 
-import { prisma } from "../db/client";
-
 const Home: NextPage = (props: any) => {
-  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
+  // const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
+
+  const { data, isLoading } = trpc.useQuery(["example.getAllQuestions"]);
+
+  if (isLoading || !data) return <div>Loading...</div>;
 
   return (
     <>
@@ -19,7 +21,8 @@ const Home: NextPage = (props: any) => {
           Create <span className="text-blue-500">T3</span> App
         </h1>
 
-        <code> {props.questions}</code>
+        <code> {JSON.stringify(data)}</code>
+        <code> {data[0]?.question}</code>
       </div>
     </>
   );
@@ -27,7 +30,7 @@ const Home: NextPage = (props: any) => {
 
 export default Home;
 
-export const getServerSideProps = async () => {
-  const questions = await prisma.pollQuestion.findMany();
-  return { props: { questions: JSON.stringify(questions) } };
-};
+// export const getServerSideProps = async () => {
+//   const questions = await prisma.pollQuestion.findMany();
+//   return { props: { questions: JSON.stringify(questions) } };
+// };

@@ -2,7 +2,9 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
 
-const Home: NextPage = () => {
+import { prisma } from "../db/client";
+
+const Home: NextPage = (props: any) => {
   const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
 
   return (
@@ -17,46 +19,15 @@ const Home: NextPage = () => {
           Create <span className="text-blue-500">T3</span> App
         </h1>
 
-        <div className="w-fit">
-          <h3 className="mt-4 text-3xl">This Stack uses:-</h3>
-          <ul className="self-start text-xl underline list-disc">
-            <li>
-              <a href="https://nextjs.org" target="_blank" rel="noreferrer">
-                Next.js
-              </a>
-            </li>
-            <li>
-              <a href="https://trpc.io" target="_blank" rel="noreferrer">
-                tRPC
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://tailwindcss.com"
-                target="_blank"
-                rel="noreferrer"
-              >
-                TailwindCSS
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://typescriptlang.org"
-                target="_blank"
-                rel="noreferrer"
-              >
-                TypeScript
-              </a>
-            </li>
-          </ul>
-
-          <div className="py-6 text-2xl">
-            {hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>}
-          </div>
-        </div>
+        <code> {props.questions}</code>
       </div>
     </>
   );
 };
 
 export default Home;
+
+export const getServerSideProps = async () => {
+  const questions = await prisma.pollQuestion.findMany();
+  return { props: { questions: JSON.stringify(questions) } };
+};
